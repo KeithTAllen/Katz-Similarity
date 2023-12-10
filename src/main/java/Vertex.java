@@ -1,3 +1,5 @@
+import java.nio.ByteBuffer;
+
 public class Vertex {
     // instance variables
     private String name;
@@ -30,6 +32,7 @@ public class Vertex {
 
     @Override
     public int hashCode() {
-        return Integer.parseInt(name);
+        ByteBuffer bytes = ByteBuffer.wrap(name.getBytes());
+        return bytes.hashCode();
     }
 }

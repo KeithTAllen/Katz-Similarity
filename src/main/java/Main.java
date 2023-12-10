@@ -7,7 +7,8 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         // read in the edge lists which also creates the parents list
         AuxUtils auxUtilsA = new AuxUtils();
-        auxUtilsA.readEdgeList("src/main/resources/sample_taxonomy_a");
+//        auxUtilsA.readEdgeList("src/main/resources/sample_taxonomy_a");
+        auxUtilsA.readEdgeList("src/main/resources/BFOOwlA");
         HashMap<Vertex, ArrayList<Vertex>> parentsA = auxUtilsA.parents;
         HashMap<Vertex, ArrayList<Vertex>> childrenA = auxUtilsA.children;
         HashSet<Vertex> allVerticesA = auxUtilsA.allVertices;
@@ -15,7 +16,8 @@ public class Main {
 
         // read in the edge lists which also creates the parents list for graph B
         AuxUtils auxUtilsB = new AuxUtils();
-        auxUtilsB.readEdgeList("src/main/resources/sample_taxonomy_b");
+//        auxUtilsB.readEdgeList("src/main/resources/sample_taxonomy_b");
+        auxUtilsB.readEdgeList("src/main/resources/BFOOwlB");
         HashMap<Vertex, ArrayList<Vertex>> parentsB = auxUtilsB.parents;
         HashMap<Vertex, ArrayList<Vertex>> childrenB = auxUtilsB.children;
         HashSet<Vertex> allVerticesB = auxUtilsB.allVertices;
@@ -28,8 +30,8 @@ public class Main {
         System.out.println("-----");
 
         // calculate ksv of each graph
-        CalcUtils graphACalcUtils = new CalcUtils(parentsA, childrenA, allVerticesA, rootA);
-        CalcUtils graphBCalcUtils = new CalcUtils(parentsB, childrenB, allVerticesB, rootB);
+        CalcUtils graphACalcUtils = new CalcUtils(parentsA, childrenA, allVerticesA, rootA, 0.05, 0.1);
+        CalcUtils graphBCalcUtils = new CalcUtils(parentsB, childrenB, allVerticesB, rootB, 0.05, 0.1);
 
 //        System.out.println("--- depthFirstKVSA ---");
 //        HashMap<String, Double> depthFirstKSVA = graphACalcUtils.depthFirstCalculateKSV(rootA);

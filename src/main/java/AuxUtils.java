@@ -7,16 +7,17 @@ import java.util.Scanner;
 
 /*
  * Functions needs to organize and parse through the data are stored here and can be accessed by
- *      calling this object.
+ *      creating an AuxUtils object. Originally AuxUtils was also supposed to handle topological
+ *      ordering and other bookkeeping. This was instead handle via traversal order in the CalcUtils
  */
 public class AuxUtils {
     /*
      * variable for AuxUtils
      */
 
-    // list of parents within a graph | Key = Child | Value = ArrayList of the child's parents | Does not include the root
+    // list of parents within a graph | Key = Child | Value = ArrayList of the child's parents | No root
     HashMap<Vertex, ArrayList<Vertex>> parents = new HashMap<>();
-    // list of children within the graph | Key = Parent | Value + ArrayList of all the parents children | TODO determine if this includes leaf nodes as keys
+    // list of children within the graph | Key = Parent | Value + ArrayList of all the parents children
     HashMap<Vertex, ArrayList<Vertex>> children = new HashMap<>();
     // distinct list of all vertices in the graph
     HashSet<Vertex> allVertices = new HashSet<>();
@@ -26,7 +27,7 @@ public class AuxUtils {
     /*
      * readEdgeListFile
      *
-     * This will create a parents list
+     * Creates a parents list, a child list, find the root , and a list of all vertices.
      */
     public void readEdgeList(String fileName) throws FileNotFoundException {
         // establish scanner with the file
@@ -40,7 +41,6 @@ public class AuxUtils {
             // create a vertex for the lines parent and child
             Vertex parent = new Vertex(line.substring(0, line.indexOf(' ')));
             Vertex child = new Vertex(line.substring(line.indexOf(' ') + 1));
-//            System.out.println("|" + parent + "|" + child + "|");
 
             // add to the HashSet of all vertices
             allVertices.add(parent); allVertices.add(child);
@@ -54,7 +54,6 @@ public class AuxUtils {
             // add the current parent and place back in HashMap
             parentSet.add(parent);
             parents.put(child, parentSet);
-//            System.out.println("Parents: " + parents);
 
             // Create children set
             // if the Vertex already exists in the child map.
@@ -65,12 +64,8 @@ public class AuxUtils {
             // add the current child and place back in HashMap
             childrenSet.add(child);
             children.put(parent, childrenSet);
-//            System.out.println("Children: " + children);
         }
 
-//        System.out.println("----------------");
-//        System.out.println("All vertices:" + allVertices);
-//        System.out.println("All parents :" + parents.keySet());
         // find the root of the graph
         for(Vertex v : allVertices){
             if (parents.get(v) == null){
@@ -78,12 +73,4 @@ public class AuxUtils {
             }
         }
     }
-
-    /*
-     * getTopologicalOrder - Create topological ordering with adjacency matrix as input
-     *
-     * Start with a default topological order of # of nodes
-     * root gets assigned zero
-     * non leaf subtract one
-     */
 }

@@ -12,8 +12,6 @@ public class CalcUtils {
     double alpha = 0.05;
     double gamma = 0.05;
 
-//    double alpha, gamma = 0.05;
-
     /*
      * Constructors
      */
@@ -53,7 +51,7 @@ public class CalcUtils {
                 // create the key for the ksv
                 String key = u.toString() + v.toString();
                 // calculate ks(u,v,alpha) and place it in the hashmap
-                slowKsv.put(key, calculateKS(u,v, alpha));
+                slowKsv.put(key, calculateKS(u,v));
 //                System.out.println(key + "|" + ksv.get(key));
             }
         }
@@ -62,12 +60,12 @@ public class CalcUtils {
 
     // depthFirst search of the child nodes
     public HashMap<String, Double> depthFirstCalculateKSV(Vertex u){
-        System.out.println(u);
+        // for every vertex
         for (Vertex v : allVertices) {
             // create the key for the ksv
             String key = u.toString() + v.toString();
             // calculate ks(u,v,alpha) and place it in the hashmap
-            ksv.put(key, calculateKS(u,v, alpha));
+            ksv.put(key, calculateKS(u,v));
         }
         // base case: if u has no children
         if(children.get(u) == null || children.get(u).isEmpty()) {
@@ -85,7 +83,7 @@ public class CalcUtils {
         return ksv;
     }
 
-    // depthFirst search of the child nodes
+    // breadthFirst search of the child nodes
     public HashMap<String, Double> breadthFirstCalculateKSV(Vertex root){
         // create a queue of what node to visit next and a HashSet of nodes we have visited
         Queue<Vertex> vertexQueue = new LinkedList<>();
@@ -104,8 +102,8 @@ public class CalcUtils {
             for (Vertex m : allVertices) {
                 // create the key for the ksv
                 String key = u.toString() + m.toString();
-                // calculate ks(u,v,alpha) and place it in the hashmap
-                tempKSV.put(key, calculateKS(u, m, alpha));
+                // calculate ks(u,v) and place it in the hashmap
+                tempKSV.put(key, calculateKS(u, m));
             }
 
             // if u has no children we have nothing to do. Skip ahead to next dequeue
@@ -130,36 +128,29 @@ public class CalcUtils {
         return tempKSV;
     }
 
-    public double calculateKS(Vertex u, Vertex v,double alpha){
+    // calculates the KS of two given nodes using the global alpha
+    public double calculateKS(Vertex u, Vertex v){
         String key = u.toString() + v.toString();
         // base case
-        if(u.equals(v)){
-//            System.out.println("Reached root");
-            return 0.0;
-        }
-        // we have already calculated this value and can just grab it
-        else if(katzSimilarities.containsKey(key)){
-            return katzSimilarities.get(key);
-        }
-        // otherwise
+        if(u.equals(v)){ return 0.0; }
+        // the value has already been calculated, just return it
+        else if(katzSimilarities.containsKey(key)){ return katzSimilarities.get(key); }
+        // otherwise calculate the value
         else {
-            double parentsSum = 0.0;
+            double parentsSum = 0;
+            if (parents.get(v) == null) { return 0; } // special root case
             // get the sum of the values of all the parents
-            // this is the root
-            if (parents.get(v) == null) { return 0; }
             for ( Vertex p : parents.get(v) ) {
-                parentsSum += calculateKS(u, p, alpha);
+                parentsSum += calculateKS(u, p);
             }
-            // calculate the final katz similarity
+            // calculate the final katz similarity and place in the map
             double katzSim = (alpha * parentsSum) + (alpha * isConnected(u,v));
-            // place in map to make children's calculations simpler
             katzSimilarities.put(key, katzSim);
-
             return katzSim;
         }
     }
 
-    // returns 1 if there is a path from parent to child returns 0 otherwise
+    // returns 1 if there is a path from parent to child returns 0 otherwiseA
     private double isConnected(Vertex u, Vertex v) {
         if (parents.get(v).contains(u))
             return 1.0;
@@ -188,6 +179,4 @@ public class CalcUtils {
         }
         return total;
     }
-
-
 }

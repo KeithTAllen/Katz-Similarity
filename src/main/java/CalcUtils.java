@@ -97,7 +97,6 @@ public class CalcUtils {
         // while we still have nodes to visit
         while ( !vertexQueue.isEmpty()) {
             Vertex u = vertexQueue.poll();
-            System.out.println(u);
 
             for (Vertex m : allVertices) {
                 // create the key for the ksv

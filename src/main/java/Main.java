@@ -1,61 +1,53 @@
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
-        // read in the edge lists which also creates the parents list
+        /*
+         * This main method calculates both the close and far assignments of terms discussed in the paper. Attempts
+         *  were made to also calculate using both depth first and slow searches. However, since the BFO ontology is
+         *  small, accurate measurements were not possible.
+         */
+        double closeKGS = getKgsBreadthFirst("src/main/resources/LaptopCorrect",
+                "src/main/resources/LaptopClose");
+        System.out.println("Close assignment KGS: " + closeKGS);
+
+        double farKGS = getKgsBreadthFirst("src/main/resources/LaptopCorrect",
+                "src/main/resources/LaptopFar");
+        System.out.println("Far assignment KGS: " + farKGS);
+    }
+
+    /*
+     * Calculates the KGS of two given graph given as edge lists, using breadth first search
+     * Order of steps to find KGS
+     *  create AuxUtils
+     *  auxUtils read edge lists
+     *  create CalcUtils
+     *  get hashmap returned from a calcKS function
+     *  call KGS
+     */
+    public static double getKgsBreadthFirst(String fileA, String fileB) throws FileNotFoundException {
+        // Create representation of each graph
         AuxUtils auxUtilsA = new AuxUtils();
-//        auxUtilsA.readEdgeList("src/main/resources/sample_taxonomy_a");
-        auxUtilsA.readEdgeList("src/main/resources/BFOOwlA");
-        HashMap<Vertex, ArrayList<Vertex>> parentsA = auxUtilsA.parents;
-        HashMap<Vertex, ArrayList<Vertex>> childrenA = auxUtilsA.children;
-        HashSet<Vertex> allVerticesA = auxUtilsA.allVertices;
-        Vertex rootA = auxUtilsA.root;
+        auxUtilsA.readEdgeList(fileA);
 
-        // read in the edge lists which also creates the parents list for graph B
         AuxUtils auxUtilsB = new AuxUtils();
-//        auxUtilsB.readEdgeList("src/main/resources/sample_taxonomy_b");
-        auxUtilsB.readEdgeList("src/main/resources/BFOOwlB");
-        HashMap<Vertex, ArrayList<Vertex>> parentsB = auxUtilsB.parents;
-        HashMap<Vertex, ArrayList<Vertex>> childrenB = auxUtilsB.children;
-        HashSet<Vertex> allVerticesB = auxUtilsB.allVertices;
-        Vertex rootB = auxUtilsB.root;
+        auxUtilsB.readEdgeList(fileB);
 
-        System.out.println("-----");
-        printGraph(auxUtilsA);
-        System.out.println("-----");
-        printGraph(auxUtilsB);
-        System.out.println("-----");
+        // Create CalcUtils for each graph
+        CalcUtils calcUtilsA = new CalcUtils(auxUtilsA.parents, auxUtilsA.children,
+                auxUtilsA.allVertices, auxUtilsA.root);
 
-        // calculate ksv of each graph
-        CalcUtils graphACalcUtils = new CalcUtils(parentsA, childrenA, allVerticesA, rootA, 0.05, 0.1);
-        CalcUtils graphBCalcUtils = new CalcUtils(parentsB, childrenB, allVerticesB, rootB, 0.05, 0.1);
+        CalcUtils calcUtilsB = new CalcUtils(auxUtilsB.parents, auxUtilsB.children,
+                auxUtilsB.allVertices, auxUtilsB.root);
 
-//        System.out.println("--- depthFirstKVSA ---");
-//        HashMap<String, Double> depthFirstKSVA = graphACalcUtils.depthFirstCalculateKSV(rootA);
-//        System.out.println("--- depthFirstKVSB ---");
-//        HashMap<String, Double> depthFirstKSVB = graphBCalcUtils.depthFirstCalculateKSV(rootB);
+        // Calculate KSV
+        HashMap<String, Double> KSVA = calcUtilsA.breadthFirstCalculateKSV(auxUtilsA.root);
 
-        System.out.println("--- depthFirstKVSA ---");
-        HashMap<String, Double> breadthFirstKSVA = graphACalcUtils.breadthFirstCalculateKSV(rootA);
-        System.out.println("--- depthFirstKVSB ---");
-        HashMap<String, Double> breadthFirstKSVB = graphBCalcUtils.breadthFirstCalculateKSV(rootB);
+        HashMap<String, Double> KSVB = calcUtilsB.breadthFirstCalculateKSV(auxUtilsB.root);
 
-        System.out.println("--- slowKSVA ---");
-        HashMap<String, Double> slowKSVA = graphACalcUtils.slowCalculateKSV();
-        System.out.println("--- slowKSVB ---");
-        HashMap<String, Double> slowKSVB = graphBCalcUtils.slowCalculateKSV();
-
-//        System.out.println("breadthFirstKSVA: " + breadthFirstKSVA);
-//        System.out.println("breadthFirstKSVB: " + breadthFirstKSVB);
-
-        // calculate KGS
-//        double ksg = graphACalcUtils.calculateKGS(slowKSVA, slowKSVB);
-//        double ksg = graphACalcUtils.calculateKGS(depthFirstKSVA, depthFirstKSVB);
-        double kgs = graphACalcUtils.calculateKGS(breadthFirstKSVA, breadthFirstKSVB);
-        System.out.println("\nThe KGS = " + kgs);
+        // Calculate and return KGS
+        return calcUtilsA.calculateKGS(KSVA, KSVB);
     }
 
     public static void printGraph(AuxUtils auxUtils){

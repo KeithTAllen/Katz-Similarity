@@ -1,3 +1,9 @@
+/*
+ * Class to import an .owl file and create a parent child edge set list needed to calculate the KGS. Based heavily
+ * upon the work of Dr. Daniel Schlegel (Github: digitalneoplasm) from the parent project of this that I also
+ * worked on.
+ */
+
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -12,7 +18,7 @@ import java.util.Map;
 
 public class Importer {
 
-    // LABEL_NAMING_MODE decides not to use IRIs in the BFOOwlA, instead naming terms after their labels.
+    // LABEL_NAMING_MODE decides not to use IRIs in the LaptopCorrect, instead naming terms after their labels.
     private static final boolean LABEL_NAMING_MODE = true;
 
     private static final Map<String, String> iriLabelMap = new HashMap<>();
@@ -20,7 +26,7 @@ public class Importer {
     public static void main(String[] args) throws OWLOntologyCreationException, IOException {
         OWLOntology ontology = loadOntology("src/main/resources/bfo.owl");
 
-        FileWriter writer = new FileWriter("src/main/resources/BadInput");
+        FileWriter writer = new FileWriter("src/main/resources/output");
 
         // Write OWL Subclass / Superclass Data //
         List<OWLClass> classes = ontology.classesInSignature().filter(c -> !isDeprecated(c, ontology)).toList();
@@ -45,7 +51,6 @@ public class Importer {
             }
         }
 
-        Map temp = iriLabelMap;
         writer.close();
     }
 
@@ -59,10 +64,6 @@ public class Importer {
         return ont.getAnnotationAssertionAxioms(oc.getIRI()).stream().anyMatch(a
                 -> a.getProperty().isDeprecated() && a.getValue() instanceof OWLLiteral &&
                 ((OWLLiteral) a.getValue()).getLiteral().equals("true"));
-    }
-
-    public static OWLReasoner getReasoner(OWLOntology ont){
-        return (new StructuralReasonerFactory()).createReasoner(ont);
     }
 
     // takes in a filename and creates an ontology from the given owl document

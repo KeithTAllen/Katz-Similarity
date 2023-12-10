@@ -1,6 +1,6 @@
 /*
  * Class to import an .owl file and create a parent child edge set list needed to calculate the KGS. Based heavily
- * upon the work of Dr. Daniel Schlegel (Github: digitalneoplasm) from the parent project of this that I also
+ * upon the work of Dr. Daniel Schlegel (GitHub: digitalneoplasm) from the parent project of this that I also
  * worked on.
  */
 
@@ -30,7 +30,8 @@ public class Importer {
 
         // Write OWL Subclass / Superclass Data //
         List<OWLClass> classes = ontology.classesInSignature().filter(c -> !isDeprecated(c, ontology)).toList();
-        List<OWLObjectProperty> properties = ontology.getObjectPropertiesInSignature().stream().filter(c -> !isDeprecated(c, ontology)).toList();
+        List<OWLObjectProperty> properties = ontology.getObjectPropertiesInSignature().stream()
+                .filter(c -> !isDeprecated(c, ontology)).toList();
 
         // get a reasoner for the ontology
         OWLReasoner reasoner = (new StructuralReasonerFactory()).createReasoner(ontology);
@@ -47,7 +48,8 @@ public class Importer {
             for(OWLClass sub : getDirectSubclasses(c, reasoner)){
                 String cl = c.getIRI() + "";
                 String su = sub.getIRI() + "";
-                writer.write(cl.substring(cl.indexOf("#") + 1) + " " + su.substring(su.indexOf("#") + 1) + "\n");
+                writer.write(cl.substring(cl.indexOf("#") + 1) + " " +
+                        su.substring(su.indexOf("#") + 1) + "\n");
             }
         }
 
@@ -90,7 +92,8 @@ public class Importer {
                     int langat = oaaastr.lastIndexOf("@");
                     int typestr = oaaastr.lastIndexOf("^^xsd");
                     oaaastr = (langat > -1) ? oaaastr.substring(0, langat) : oaaastr;
-                    oaaastr = (typestr > -1 && typestr > langat && typestr <= oaaastr.length()) ? oaaastr.substring(0, typestr) : oaaastr;
+                    oaaastr = (typestr > -1 && typestr > langat && typestr <= oaaastr.length()) ?
+                            oaaastr.substring(0, typestr) : oaaastr;
                     iriLabelMap.put(c.getIRI().getShortForm(), oaaastr.toLowerCase());
                 }
         }
@@ -101,7 +104,8 @@ public class Importer {
                     int langat = oaaastr.lastIndexOf("@");
                     int typestr = oaaastr.lastIndexOf("^^xsd");
                     oaaastr = (langat > -1) ? oaaastr.substring(0, langat) : oaaastr;
-                    oaaastr = (typestr > -1 && typestr > langat && typestr <= oaaastr.length()) ? oaaastr.substring(0, typestr) : oaaastr;
+                    oaaastr = (typestr > -1 && typestr > langat && typestr <= oaaastr.length()) ?
+                            oaaastr.substring(0, typestr) : oaaastr;
                     iriLabelMap.put(p.getIRI().getShortForm(), oaaastr.toLowerCase());
                 }
         }

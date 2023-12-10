@@ -1,3 +1,8 @@
+/*
+ * At one point the Vertex was supposed to know much more about itself, in hindsight I would have just used a String
+ * and not bothered creating a class.
+ */
+
 import java.nio.ByteBuffer;
 
 public class Vertex {
@@ -13,7 +18,7 @@ public class Vertex {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    // toString and compa
+    // toString and compare
     public String toString() {
         return name;
     }

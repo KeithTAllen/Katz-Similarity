@@ -1,3 +1,9 @@
+/*
+ * Functions needs to organize and parse through the data are stored here and can be accessed by
+ *      creating an AuxUtils object. Originally AuxUtils was also supposed to handle topological
+ *      ordering and other bookkeeping. This was instead handle via traversal order in the CalcUtils
+ */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -5,11 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
-/*
- * Functions needs to organize and parse through the data are stored here and can be accessed by
- *      creating an AuxUtils object. Originally AuxUtils was also supposed to handle topological
- *      ordering and other bookkeeping. This was instead handle via traversal order in the CalcUtils
- */
 public class AuxUtils {
     /*
      * variable for AuxUtils

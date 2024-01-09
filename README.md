@@ -13,11 +13,11 @@ The Java implementation of Katz Similarity is based heavily of the work done by 
 
 This code currently needs a major overhaul. 
   Poor design choices made in the beginning of implmentation led to useless classes such as the Vertex Class, as well as the seperation of the AuxUtils and CalcUtils classes. 
-  Instead the entire vertex class will be scrapped and AuxUtils and CalcUtils can be combined into a more generalized Graph class. 
+  Instead, the entire vertex class will be scrapped and the AuxUtils and CalcUtils will be combined into a more generalized Graph class, since they both require the same information to perform their respectove jobs. 
 
 ### The Paper
 In the Documents directory a pdf of the paper written for this project can be found. 
   It provides more background into what the field of Ontology is, its importance, and the specific motivation of this project. 
   The paper shows that an Ontology can be abstrated into a direct acyclic graph, and why Katz Similarity is a wise choice for this use case. 
-  Finally, it attempts to layout the next steps for the project. 
+  Finally, future work and the immediate next steps of the project are laid out. 
   
